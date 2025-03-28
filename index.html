@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leo's Art Page</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+    function loadOpenCV() {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/opencv.js@4.5.5/dist/opencv.js';
+            script.async = true;
+            script.onload = () => {
+                console.log('OpenCV loaded successfully from CDN');
+                resolve();
+            };
+            script.onerror = () => {
+                console.log('CDN failed, trying local fallback');
+                const fallbackScript = document.createElement('script');
+                fallbackScript.src = 'opencv.js';
+                fallbackScript.onload = () => resolve();
+                fallbackScript.onerror = () => reject(new Error('Could not load OpenCV'));
+                document.body.appendChild(fallbackScript);
+            };
+            document.body.appendChild(script);
+        });
+    }
+    </script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Leo's Art Page</h1>
+        <div id="loadingIndicator" class="loading-indicator">
+            <p>Loading art tools (this may take a few seconds)...</p>
+            <div class="spinner"></div>
+        </div>
+        <div class="upload-area" id="dropZone">
+            <input type="file" id="fileInput" accept="image/*">
+            <p>Drag & drop an image or click to browse</p>
+        </div>
+        <div class="controls">
+            <div class="control-group">
+                <label for="edgeThreshold">Edge Sensitivity:</label>
+                <input type="range" id="edgeThreshold" min="1" max="255" value="100">
+            </div>
+            <div class="control-group">
+                <label for="simplifyToggle">Simplify Shapes:</label>
+                <input type="checkbox" id="simplifyToggle">
+            </div>
+            <button id="processBtn">Process Image</button>
+        </div>
+        <div class="canvas-container">
+            <canvas id="originalCanvas"></canvas>
+            <canvas id="processedCanvas"></canvas>
+        </div>
+        <div class="export-options">
+            <button id="downloadPng">Download PNG</button>
+            <button id="downloadSvg">Download SVG</button>
+        </div>
+    </div>
+</body>
+</html>
